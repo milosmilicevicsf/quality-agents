@@ -1,0 +1,7 @@
+{
+  "include": ["*.ts", "*.tsx", "package.json", "README.md"],
+  "exclude": ["node_modules/*", "dist/*", "build/*", "playwright-report/*", "test-results/*"],
+  "test_paths": ["tests/*.spec.ts", "src/*.test.ts", "src/*.spec.ts"],
+  "focus": ["src/*", "tests/*", "playwright.config.ts"],
+  "project_context": "TypeScript application. Check existing unit/API/Playwright infrastructure. Do not use Playwright just because it is available. Keep browser checks for user journeys and UI wiring. Replace this text with domain, test data and approved commands."
+}

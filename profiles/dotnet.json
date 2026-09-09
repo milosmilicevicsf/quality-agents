@@ -1,0 +1,7 @@
+{
+  "include": ["*.cs", "*.csproj", "*.sln", "README.md"],
+  "exclude": ["bin/*", "obj/*", "packages/*"],
+  "test_paths": ["tests/*.cs", "*Tests/*Tests.cs"],
+  "focus": ["src/*", "tests/*"],
+  "project_context": "C#/.NET project. Detect NUnit, xUnit or MSTest from actual files; use existing framework. APIs, message handlers and database boundaries need explicit test doubles/integration choices. Replace with domain and test commands."
+}

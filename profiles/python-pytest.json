@@ -1,0 +1,7 @@
+{
+  "include": ["*.py", "pyproject.toml", "pytest.ini", "requirements*.txt", "README.md"],
+  "exclude": ["vendor/*", ".venv/*", "build/*", "dist/*"],
+  "test_paths": ["tests/test_*.py", "tests/*/test_*.py"],
+  "focus": ["src/*", "tests/*"],
+  "project_context": "Python/pytest project. Replace with domain and critical risks. Prefer unit tests for isolated logic; use integration tests for DB, queues and service contracts. Suggested local command: python -m pytest tests -q."
+}

@@ -1,0 +1,7 @@
+{
+  "include": ["*.java", "pom.xml", "build.gradle", "build.gradle.kts", "README.md"],
+  "exclude": ["target/*", "build/*"],
+  "test_paths": ["src/test/java/*.java", "*/src/test/java/*.java"],
+  "focus": ["src/main/*", "src/test/*"],
+  "project_context": "Java project. Detect JUnit/TestNG and existing REST/service test patterns. Keep production dependencies unchanged. Replace with domain, service boundaries and approved Maven/Gradle command."
+}
