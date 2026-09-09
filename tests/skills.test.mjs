@@ -15,7 +15,7 @@ const temp = () => fs.mkdtempSync(path.join(os.tmpdir(), 'qa-skills-test-'));
 test('registration creates three native workers for each host and is idempotent', () => {
   const dir = temp();
   try {
-    for (const host of ['claude-code', 'codex']) {
+    for (const host of ['claude-code', 'codex', 'cursor']) {
       const result = install(dir, host);
       assert.equal(result.length, 3);
       assert.ok(result.every(x => x.status === 'created' && fs.existsSync(x.path)));

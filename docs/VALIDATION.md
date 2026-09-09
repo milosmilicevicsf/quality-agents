@@ -2,6 +2,13 @@
 
 ## Native three-agent update
 
+Cursor adapter follow-up: Skills CLI 1.5.25 installed both entry skills for Cursor
+in an isolated project. The installed setup created three `.cursor/agents/*.md`
+definitions; parsed YAML confirms native `readonly: true` for analyst/reviewer
+and `false` for engineer, with inherited models and foreground handoffs. All 11
+Node tests pass with registration now covering Cursor, Claude Code and Codex.
+The local Cursor application itself was not available for live execution.
+
 - Both entry skills passed skill frontmatter/reference validation.
 - Skills CLI 1.5.25 discovered and installed both complete skill folders from the
   local source into isolated Claude Code and Codex project paths.

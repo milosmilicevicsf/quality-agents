@@ -27,13 +27,20 @@ The coordinator saves reports returned by read-only workers and reconciles disag
 |---|---|
 | `setup-quality-agents` entry skill | Discover conventions; register native workers |
 | `assets/roles.json` in setup skill | Canonical prompts and responsibility boundaries |
-| Setup's `install-agents.mjs` | Create three Claude Markdown or Codex TOML agent files without overwriting custom definitions |
+| Setup's `install-agents.mjs` | Create three Cursor/Claude Markdown or Codex TOML agent files without overwriting custom definitions |
 | `quality-flow` entry skill | Dispatch independent sessions, pass evidence, enforce task scope, consolidate output |
 | Host native agent runtime | Actual model execution, separate contexts, tool calls, permissions and usage accounting |
 | Flow's `render-report.mjs` | Escape and validate presentation data, produce standalone HTML |
 | Existing Python package | Optional API/CI workflow with deterministic packet validation and review receipts |
 
 ## Supported adapters
+
+Cursor setup creates `.cursor/agents/qa-*.md` with `model: inherit` and
+`is_background: false` for sequential handoffs. Analyst/reviewer use `readonly: true`;
+engineer uses normal Agent permissions. Use Cursor Agent with native subagent support.
+Its Task delegation starts workers in separate contexts. Customization format follows
+[Cursor subagents](https://cursor.com/docs/subagents); live local Cursor execution has
+not been performed in this environment.
 
 Claude Code setup creates `.claude/agents/qa-*.md`. Analyst/reviewer receive only
 Read, Grep and Glob tools. Engineer has read/write/edit and Bash, constrained by

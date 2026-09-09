@@ -1,6 +1,6 @@
 ---
 name: setup-quality-agents
-description: Register three independent quality agents in Claude Code or Codex and discover project testing conventions, reusing sdet-skills configuration. Use on first setup or when conventions change.
+description: Register three independent quality agents in Cursor, Claude Code or Codex and discover project testing conventions, reusing sdet-skills configuration. Use on first setup or when conventions change.
 ---
 
 # Setup Quality Agents
@@ -18,13 +18,16 @@ folder. Resolve this skill's installed directory and run its bundled script:
 node "<this-skill>/scripts/install-agents.mjs" --target "<project>" --host claude-code
 ```
 
-Use `--host codex` for Codex. It creates three native agent definitions inside
-`.claude/agents/` or `.codex/agents/`: `qa-risk-analyst`, `qa-test-engineer`,
+Use `--host codex` for Codex or `--host cursor` for Cursor. It creates three native
+agent definitions inside `.claude/agents/`, `.codex/agents/` or `.cursor/agents/`:
+`qa-risk-analyst`, `qa-test-engineer`,
 `qa-quality-reviewer`. Risk Analyst and Quality Reviewer are configured for read-only
 work; Test Engineer inherits the host's normal execution/edit permissions. No model,
 API key, bypass flag or global permission change is required. Roles inherit model
 selection. Existing customized definitions are never overwritten. If a conflict is
 reported, inspect it and preserve the user's customization rather than forcing a reset.
+Cursor uses its own `readonly` frontmatter field for analyst/reviewer; don't copy
+Claude's tool allowlist or Codex's TOML settings into a Cursor definition.
 
 The script needs Node 18+, already used by the skills installer. If unavailable,
 create equivalent native definitions from `assets/roles.json` using the host's
@@ -72,6 +75,6 @@ message to paste into the assistant:
 
 > Use quality-flow to analyze this story: [paste acceptance criteria here].
 
-The user can select the installed skill instead: `/quality-flow` in Claude Code,
+The user can select the installed skill instead: `/quality-flow` in Cursor or Claude Code,
 or `$quality-flow` in Codex. These are assistant inputs, not terminal commands.
 If quality-flow is not installed, say to select both skills in the same installer.

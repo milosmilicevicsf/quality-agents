@@ -8,6 +8,9 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const roles = JSON.parse(fs.readFileSync(path.join(root, 'assets/roles.json'), 'utf8'));
 
 export function agentText(role, host) {
+  if (host === 'cursor') {
+    return `---\nname: ${role.name}\ndescription: ${JSON.stringify(role.description)}\nmodel: inherit\nreadonly: ${role.readonly}\nis_background: false\n---\n\n${role.prompt}\n`;
+  }
   if (host === 'claude-code') {
     const tools = role.readonly ? 'Read, Grep, Glob' : 'Read, Grep, Glob, Edit, Write, Bash';
     return `---\nname: ${role.name}\ndescription: ${JSON.stringify(role.description)}\ntools: ${tools}\nmodel: inherit\n---\n\n${role.prompt}\n`;
@@ -16,14 +19,14 @@ export function agentText(role, host) {
     // JSON basic strings are valid TOML basic strings for these bundled values.
     return `name = ${JSON.stringify(role.name)}\ndescription = ${JSON.stringify(role.description)}\n${role.readonly ? 'sandbox_mode = "read-only"\n' : ''}developer_instructions = ${JSON.stringify(role.prompt)}\n`;
   }
-  throw Error('Host must be claude-code or codex');
+  throw Error('Host must be claude-code, codex or cursor');
 }
 
 export function install(target, host, dryRun = false) {
-  if (!['claude-code', 'codex'].includes(host)) throw Error('Choose --host claude-code or codex');
+  if (!['claude-code', 'codex', 'cursor'].includes(host)) throw Error('Choose --host claude-code, codex or cursor');
   const repo = fs.realpathSync(path.resolve(target));
   if (!fs.statSync(repo).isDirectory()) throw Error('Target must be a project directory');
-  const relative = host === 'codex' ? '.codex/agents' : '.claude/agents';
+  const relative = { codex: '.codex/agents', 'claude-code': '.claude/agents', cursor: '.cursor/agents' }[host];
   const dest = path.join(repo, relative);
   // Reject symlinked configuration paths, including dangling links.
   for (const item of [path.dirname(dest), dest]) {
@@ -58,7 +61,7 @@ export function main(args) {
     } else if (args[i] === '--dry-run') dryRun = true;
     else throw Error(`Unknown argument: ${args[i]}`);
   }
-  if (!target || !host) throw Error('Usage: --target PROJECT --host claude-code|codex [--dry-run]');
+  if (!target || !host) throw Error('Usage: --target PROJECT --host claude-code|codex|cursor [--dry-run]');
   console.log(JSON.stringify(install(target, host, dryRun), null, 2));
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

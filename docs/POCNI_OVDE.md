@@ -1,6 +1,6 @@
 # Kako da koristiš tri agenta
 
-Radiš u projektu koji želiš da testiraš, u Claude Code-u ili Codex-u. Ne moraš da
+Radiš u projektu koji želiš da testiraš, u Cursor-u, Claude Code-u ili Codex-u. Ne moraš da
 kloniraš quality-agents niti da pokrećeš Python komande. Coding asistent je koordinator;
 tri odvojena subagenta rade analizu, testove i nezavisan review.
 
@@ -18,7 +18,7 @@ kao i coding asistent koji podržava subagente. Zaseban API ključ nije potreban
 
 ## Jednom po projektu: setup tima
 
-U razgovor sa Claude Code-om upiši `/setup-quality-agents`.
+U Cursor Agent ili Claude Code chat upiši `/setup-quality-agents`.
 U Codex-u upiši `$setup-quality-agents` ili izaberi skill iz liste.
 
 Asistent sam registruje Risk Analyst, Test Engineer i Quality Reviewer, pročita
@@ -28,7 +28,7 @@ Ako novi agenti nisu vidljivi, zatvori i ponovo otvori coding asistenta.
 
 ## Svaki zadatak: jedna poruka
 
-Za analizu, u Claude Code-u:
+Za analizu, u Cursor Agent ili Claude Code chatu:
 
 ```text
 /quality-flow Analiziraj ovaj story i predloži testove: [nalepi story i acceptance criteria]
@@ -43,6 +43,11 @@ pa neka Quality Reviewer nezavisno pregleda rezultat: [story]
 
 U Codex-u koristi `$quality-flow` umesto `/quality-flow`. Možeš i običnom porukom
 tražiti da koristi quality-flow tim. Ovo se piše u chat asistenta, ne u terminal.
+
+Za instalaciju samo u Cursor možeš koristiti
+`npx skills@latest add milosmilicevicsf/quality-agents --agent cursor`.
+Setup pravi tri fajla u `.cursor/agents/`. Ako si instalirao raniju verziju, ponovi
+instalaciju, pokreni setup i otvori novi Agent razgovor ako agenti nisu vidljivi.
 
 ## Šta ćeš videti
 

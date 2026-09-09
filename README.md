@@ -23,7 +23,7 @@ want the entry points available across projects. Setup still runs once per proje
 
 ### 2. Set up the team
 
-In **Claude Code's chat**, run:
+In **Cursor Agent or Claude Code's chat**, run:
 
 ```text
 /setup-quality-agents
@@ -42,7 +42,7 @@ assistant if it hasn't picked up the newly registered agents.
 
 ### 3. Give the team a task
 
-In Claude Code:
+In Cursor Agent or Claude Code:
 
 ```text
 /quality-flow Analyze this story: users cannot submit an application at or after its deadline.
@@ -103,6 +103,8 @@ that scoped work; no repetitive approval commands or manual packet handoffs.
 
 - Node 18+ for the installer/helpers, Git, and a coding assistant with native subagents.
 - Claude Code: setup writes project agent Markdown files in `.claude/agents/`.
+- Cursor: setup writes Markdown definitions in `.cursor/agents/` with native
+  `readonly` settings for the analyst and reviewer. Use Agent mode with subagent support.
 - Current Codex: setup writes standalone agent TOML files in `.codex/agents/`.
 - A hosted assistant with native delegation can instead spawn generic agents with
   explicit role briefs. Agent tool access is required in either case.
@@ -147,7 +149,8 @@ See [validation](docs/VALIDATION.md), [agent architecture](docs/NATIVE_AGENTS.md
 and [security boundaries](SECURITY.md).
 
 Installation follows the [Skills CLI](https://github.com/vercel-labs/skills).
-Native definitions follow [Claude Code subagents](https://code.claude.com/docs/en/sub-agents)
+Native definitions follow [Cursor subagents](https://cursor.com/docs/subagents),
+[Claude Code subagents](https://code.claude.com/docs/en/sub-agents)
 and [Codex subagents](https://developers.openai.com/codex/multi-agent).
 
 MIT licensed. No client code, credentials or production data belong in this toolkit.
