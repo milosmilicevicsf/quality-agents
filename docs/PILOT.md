@@ -11,9 +11,9 @@ For every case record:
 |---|---|
 | Human reference | Expected risk, layer and known coverage |
 | Source revision | Exact commit and selected context |
-| Risk Mapper | Correct/incorrect layer, missed risks, duplicate suggestions, false coverage claims |
-| Test Builder | Useful assertions, unsupported dependencies, code review changes, whether the historical bug fails |
-| Failure Analyst | Correct cause, evidence quality, plausible alternatives, inappropriate confidence |
+| Risk Analyst | Correct/incorrect layer, missed risks, duplicate suggestions, false coverage claims |
+| Test Engineer | Useful assertions, unsupported dependencies, code review changes, whether the historical bug fails |
+| Quality Reviewer | Correct cause, evidence quality, plausible alternatives, inappropriate confidence |
 | Time | Context preparation + model wait + human review + fixes + triage |
 | Cost | Recorded token usage plus provider billing |
 

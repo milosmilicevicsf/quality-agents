@@ -1,5 +1,32 @@
 # Verification record — 2026-09-09
 
+## Native three-agent update
+
+- Both entry skills passed skill frontmatter/reference validation.
+- Skills CLI 1.5.25 discovered and installed both complete skill folders from the
+  local source into isolated Claude Code and Codex project paths.
+- Installed setup script registered all three agents for both hosts. Codex output
+  parsed successfully with Python's standard TOML parser.
+- 11 Node tests pass: idempotent registration, conflict preservation, symlink
+  rejection, dry run, HTML injection escaping, distinct worker identity requirement,
+  blocked delegation, execution-evidence fields and standalone copied-skill rendering.
+- The existing 31 Python tests still pass.
+- Three real hosted subagents ran sequentially with separate contexts/ids:
+  `/root/qa_risk_analyst`, `/root/qa_test_engineer`, `/root/qa_quality_reviewer`.
+  Reviewer received original requirements and raw source/tests/logs, not the writer's
+  conclusions. It identified a missing regression and requested one repair round.
+- Final synthetic-project run: 13 tests, 10 passed, 3 failed, exit 1. The failures
+  expose two product defects; no product code or existing assertions were changed.
+  See [the observed run report](../examples/native-agent-report.html).
+
+Native agent definitions are registration-tested against the documented host formats;
+local Claude Code/Codex app execution wasn't available here. The live smoke test used
+the hosted generic native-subagent adapter. It does not benchmark model accuracy.
+HTML generation and escaping were tested; a local browser screenshot was not completed
+because the browser binary download was unavailable. No visual-browser pass is claimed.
+
+## Original optional CLI verification
+
 Executed on Linux, Python 3.12, with local Git. No customer repository or data was
 used. No live model call was made and no GitHub Actions run is claimed.
 

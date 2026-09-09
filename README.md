@@ -1,231 +1,153 @@
 # Quality Agents
 
-Your reusable quality engineering toolkit: **Risk Mapper → Test Builder → Failure Analyst**.
+**Three independent agents. One task. One report.**
 
-Python 3.11+ and Git. No runtime pip dependencies. Windows, macOS and Linux CLI.
-English agent instructions and reports; [Serbian getting-started guide](docs/POCNI_OVDE.md).
+Give your coding assistant a story or failure. A **Risk Analyst** inspects it, a
+**Test Engineer** designs or writes the tests, and a **Quality Reviewer** independently
+challenges the result. Each worker has its own agent context and identity. Your
+current assistant coordinates the handoffs and produces one offline HTML report.
 
-This is an executable workflow, not just a prompt collection. It collects bounded
-repository context, validates model outputs, records review decisions, stages test
-proposals outside the target repository and records real command results.
+## Start here
 
-## Try it now — no API key
+### 1. Install once
 
-From the repository root:
+In the terminal of the project you want to test:
 
 ```sh
-python -m quality_agents demo --out ../quality-demo
+npx skills@latest add milosmilicevicsf/quality-agents
 ```
 
-The bundled synthetic admissions project contains an intentional deadline bug.
-The demo executes three real tests; one is expected to fail. It produces:
+Select **both** `setup-quality-agents` and `quality-flow`, then your coding assistant.
+Use the same installer you use for `sdet-skills`. Choose global installation if you
+want the entry points available across projects. Setup still runs once per project.
+
+### 2. Set up the team
+
+In **Claude Code's chat**, run:
 
 ```text
-quality-demo/
-  sample-project/          Original Git project, unchanged
-  01-risk/                Context, fixture risk map, simulated demo approval
-  02-builder/             Proposed regression tests, simulated demo approval
-  03-staged/
-    repo/                 Separate copy with proposed tests
-    changes.patch         Human-reviewable patch
-    verification.json     Actual command status
-    verification.txt      Actual sanitized log
-  04-failure/             Evidence-backed fixture diagnosis
-  summary.json
+/setup-quality-agents
 ```
 
-**Demo agent responses are deterministic fixtures. No model is called.** The test
-execution and target-preservation checks are real. Normal commands never select
-fixtures or auto-approve reports. An optional install exposes `quality-agents`:
+In **Codex's chat**, select the installed skill or type:
 
-```sh
-python -m pip install -e .
-quality-agents --help
+```text
+$setup-quality-agents
 ```
 
-## What each role does
+The assistant discovers your existing test stack, reuses `docs/agents/testing.md`
+from sdet-skills when present, and registers three native agents for the project.
+It writes the discovered conventions to `docs/agents/quality.md`. Restart the
+assistant if it hasn't picked up the newly registered agents.
 
-| Role | Input | Output | Human decision |
+### 3. Give the team a task
+
+In Claude Code:
+
+```text
+/quality-flow Analyze this story: users cannot submit an application at or after its deadline.
+```
+
+In Codex:
+
+```text
+$quality-flow Analyze this story: users cannot submit an application at or after its deadline.
+```
+
+To request implementation too:
+
+```text
+Use quality-flow to analyze this story, implement the regression tests, run them,
+and have the Quality Reviewer independently review the result: [paste story here].
+```
+
+You receive one **report.html** with the scenario/layer map, actual checks, independent
+review, next actions and the three host agent ids. Open it in any browser; no server
+or internet is needed. The assistant handles the internal artifacts and JSON.
+
+**The slash/dollar inputs belong in your coding assistant, not PowerShell or Bash.**
+Start with the [Serbian walkthrough](docs/POCNI_OVDE.md) if you want a complete example.
+
+## What runs
+
+| Worker | Own context | Responsibility | Code ownership |
 |---|---|---|---|
-| Risk Mapper | Story, code, tests, optional diff | Scenarios, oracle, layer, existing coverage, evidence, questions | Agree coverage and unresolved risk |
-| Test Builder | Approved plan for the same revision | Full test file proposals mapped to scenario ids | Review assertions and test code |
-| Failure Analyst | Story, code and actual execution evidence | Hypotheses, evidence, alternatives, next action | Decide owner, fix and priority |
+| Risk Analyst | Separate native agent | Inspect requirements, implementation and existing assertions; choose reliable test layers | Read-only |
+| Test Engineer | Separate native agent | Design tests; write and execute when requested | Requested test files |
+| Quality Reviewer | Fresh native agent | Review original requirements, raw diff and logs; challenge coverage and diagnose failures | Read-only |
 
-The process is sequential where evidence depends on earlier work. Three roles do
-not mean three agents running indiscriminately in parallel. There is no fourth AI
-release approver. Deterministic validators reject malformed outputs, invalid
-citations, non-test file proposals and stale approvals.
+The coordinator waits for the risk plan before dispatching the engineer, then gives
+the reviewer raw evidence instead of the writer's verdict. All three participate
+in analysis too: the engineer checks feasibility without editing, and the reviewer
+challenges the proposed plan. Separate agents can still share model biases; human
+judgment and the actual test results remain necessary.
 
-## Use it on your own project
+These are **on-demand native subagents**, not background services or three names
+inside one model response. Skills are only the setup and coordinator entry points.
+The installed host supplies the execution engine, permissions, model and billing.
+No extra API key or Python package is required for this default path. Your host's
+normal usage limits apply; agent calls are not free unlimited compute.
 
-Keep this toolkit, the target Git repository and output folders separate. The target
-must have a committed HEAD and a clean working tree. Make a local feature commit
-before analysis; a remote push is not required.
+## Three common tasks
 
-### 1. Configure context once per project
+| Your request | What the team does |
+|---|---|
+| “Analyze this story” | Risk map → implementation advice → independent plan review. No test edits. |
+| “Write tests for this story” | Risk map → test implementation/execution → independent review. |
+| “Investigate this failed test” + log | Business impact → evidence investigation/reproduction → independent diagnosis. No automatic fix. |
 
-```sh
-python -m quality_agents init --out ../my-project.qa.json
-```
+Analysis doesn't silently authorize edits. A request to write tests already authorizes
+that scoped work; no repetitive approval commands or manual packet handoffs.
 
-Edit `project_context`, `focus`, `include`, `exclude` and `test_paths`. See
-[profiles](profiles/) for Python/pytest, Playwright/TypeScript, .NET and Java examples.
-Patterns use Python `fnmatch` over repository-relative POSIX paths; `*` also matches
-slashes. `test_paths` is the write allowlist: keep it narrow. It does not prove a
-file is semantically a test. Framework detection produces hints, not certifications.
+## Requirements and honest limits
 
-### 2. Prepare a Risk Mapper packet
+- Node 18+ for the installer/helpers, Git, and a coding assistant with native subagents.
+- Claude Code: setup writes project agent Markdown files in `.claude/agents/`.
+- Current Codex: setup writes standalone agent TOML files in `.codex/agents/`.
+- A hosted assistant with native delegation can instead spawn generic agents with
+  explicit role briefs. Agent tool access is required in either case.
+- Older/disabled hosts may need an update or restart. If delegation is unavailable,
+  the workflow reports that blocker; it does not pretend a single response was three agents.
+- Registration preserves custom agent files and doesn't change global permissions.
+- Read-only settings are constrained by host behavior and inherited policies. Test
+  execution has the host's OS permissions; this is not a new security sandbox.
+- Reports default outside your repo to a fresh temp directory. Save/copy the HTML
+  somewhere permanent to retain it; hosted environments use their artifact system.
 
-```sh
-python -m quality_agents prepare risk --repo ../my-project --story ../story.md --config ../my-project.qa.json --out ../qa-runs/story-42-risk
-```
+[Preview the report](examples/report-preview.html) by downloading the HTML and opening
+it locally. It is clearly labeled illustrative data, not a completed agent run.
+For a real three-worker smoke test, see [the observed run report](examples/native-agent-report.html).
 
-Optional `--base main` adds a diff between the resolved base and HEAD, restricted to
-selected files. `focus` patterns are prioritized first, followed by changed files,
-tests and other included files. Open `prompt.md`: this is the exact context you are
-about to share. The packet records omitted files and truncation explicitly.
+## How this fits sdet-skills
 
-### 3. Choose how the model runs
+Keep both repos. `sdet-skills` supplies your reusable test-writing disciplines and
+conventions. `quality-agents` supplies actual worker definitions, their division of
+responsibility, evidence handoffs and consolidated results. Setup reuses the existing
+conventions instead of asking the same questions again.
 
-**Existing coding assistant / subscription workflow**
+## What happened to the Python code?
 
-Give `prompt.md` to your approved coding assistant. Ask it to return only JSON using
-the included schema. Save the answer as `response.json`, without markdown fences:
+It remains an **optional advanced workflow** for direct OpenAI API calls, structured
+validation, review receipts, separate test staging and CI scripting. It is not
+required by the native three-agent path, and its bounded role calls do not become
+native subagents merely because they share the role names.
 
-```sh
-python -m quality_agents import --run ../qa-runs/story-42-risk --response ../response.json
-```
+Use [the advanced CLI guide](docs/CLI.md) only if you need that execution mode.
+The native path's reviews are conversational, not the CLI's hash-bound receipts.
 
-This is a manual handoff, not an automatic integration with a ChatGPT, Claude or
-Copilot subscription. The CLI makes no model/network call in this mode.
-
-**OpenAI API workflow**
-
-Set `OPENAI_API_KEY` in your local environment and select a model supporting
-Responses Structured Outputs that is available to your account:
-
-```sh
-python -m quality_agents run --run ../qa-runs/story-42-risk --model YOUR_MODEL_ID --send
-```
-
-`--send` explicitly authorizes transmitting the reviewed packet to OpenAI. One API
-call per run; no automatic retry or multi-agent spending loop. Refusal, incomplete
-responses and schema errors fail closed. Usage metadata is recorded. API access and
-billing are separate from this repository; no key is included.
-
-### 4. Review, then approve the risk map
-
-Read `report.md`, source assertions and the story. Resolve important questions before
-recording approval; the note should explain accepted residual risk.
-
-```sh
-python -m quality_agents approve --run ../qa-runs/story-42-risk --reviewer "Milos" --note "Reviewed boundaries and dependencies; UI exploration remains manual"
-```
-
-Approval hashes bind the exact packet and result to the Git revision. They detect
-accidental changes; they are not signatures, identity verification or access control.
-
-### 5. Build test proposals
-
-```sh
-python -m quality_agents prepare builder --repo ../my-project --story ../story.md --config ../my-project.qa.json --plan ../qa-runs/story-42-risk --out ../qa-runs/story-42-builder
-```
-
-Use `run` or `import` as above for this new packet, then review the full file contents
-in `result.json`. Check assertions are independent of implementation, dependencies
-are real, mocks are appropriate and existing tests have not been weakened.
-
-```sh
-python -m quality_agents approve --run ../qa-runs/story-42-builder --reviewer "Milos" --note "Reviewed generated code and expected failures"
-python -m quality_agents stage --run ../qa-runs/story-42-builder --out ../qa-runs/story-42-stage
-```
-
-This creates a separate copy of committed source with proposed tests and a
-`changes.patch`. No files in the target project are modified. Submodules, symlinks
-and tracked credential paths are deliberately unsupported for staging in v1.
-
-### 6. Execute a check you choose
-
-Review `changes.patch` first. Dependencies are not installed or copied automatically.
-Use an already provisioned environment or disposable CI runner. Then, for example:
-
-```sh
-python -m quality_agents verify --stage ../qa-runs/story-42-stage --command-json '["python", "-m", "pytest", "tests", "-q"]'
-```
-
-PowerShell usually accepts the same single-quoted JSON. If your Windows shell
-rewrites quotes, call from Python with a list or use PowerShell's native argument
-passing mode. See [the Windows example](docs/POCNI_OVDE.md).
-
-`verify` executes exactly the user-provided argument list without a shell. It is
-**not an OS sandbox**: tests are executable code. It strips inherited credentials
-from the subprocess environment and sets a timeout, but code could still read local
-files or use the network. Use a disposable runner for untrusted projects/tests.
-
-Status is `passed`, `failed` or `timeout`, from the command exit code. A green status
-does not establish coverage, test discovery or release readiness. Inspect test counts
-and assertions. Suggested commands in AI reports are never executed automatically.
-
-### 7. Analyze a failure
-
-```sh
-python -m quality_agents prepare failure --repo ../my-project --story ../story.md --config ../my-project.qa.json --evidence ../qa-runs/story-42-stage/verification.txt --out ../qa-runs/story-42-failure
-```
-
-Then `run` or `import` that packet. You can supply multiple `--evidence` text files,
-including sanitized CI logs, extracted JUnit details and prior failure history.
-Binary traces/screenshots are not decoded by v1. New generated tests are not part of
-the original repository context: include relevant test code as additional evidence
-when needed. A diagnosis remains a hypothesis until a human verifies it.
-
-### 8. Apply an accepted proposal to your feature branch
-
-Check the target is still at the reviewed commit, then run from that target:
-
-```sh
-git apply --check ../qa-runs/story-42-stage/changes.patch
-git apply ../qa-runs/story-42-stage/changes.patch
-```
-
-Review and commit through your normal PR workflow. The toolkit does not push, merge,
-approve PRs, close defects or make release decisions. Changing the target commit
-requires a fresh plan/review cycle; this intentionally avoids stale approvals.
-
-## Documentation
-
-- [Start here, in Serbian](docs/POCNI_OVDE.md)
-- [Architecture, article alignment and design tradeoffs](docs/ARCHITECTURE.md)
-- [Team workflow and review ownership](docs/OPERATING_MODEL.md)
-- [Personal use and coding assistant handoff](docs/ASSISTANT_WORKFLOW.md)
-- [Pilot/evaluation and bottleneck measurements](docs/PILOT.md)
-- [CI integration](docs/CI.md)
-- [Security and practical limits](SECURITY.md)
-- [Build verification record](docs/VALIDATION.md)
-
-## Repository checks
+## Development and validation
 
 ```sh
 python -m unittest discover -s tests -v
+node --test tests/skills.test.mjs
 ```
 
-CI is configured to run this suite on Ubuntu and Windows with Python 3.11 and 3.12. It does not call
-models or upload customer project context. The offline suite validates the workflow;
-evaluate live-model quality on your own reviewed examples before expanding use.
+See [validation](docs/VALIDATION.md), [agent architecture](docs/NATIVE_AGENTS.md),
+[team operating model](docs/OPERATING_MODEL.md), [pilot measurement](docs/PILOT.md)
+and [security boundaries](SECURITY.md).
 
-## Publishing your copy
+Installation follows the [Skills CLI](https://github.com/vercel-labs/skills).
+Native definitions follow [Claude Code subagents](https://code.claude.com/docs/en/sub-agents)
+and [Codex subagents](https://developers.openai.com/codex/multi-agent).
 
-This source is intended for `milosmilicevicsf/quality-agents`. Keep it private initially.
-If publishing from a local copy with GitHub CLI installed and authenticated:
-
-```sh
-python scripts/publish.py --create
-```
-
-The script checks the authenticated account, initializes Git if needed, creates a
-private repository and pushes without force. Omit `--create` if an empty remote
-already exists. It does not handle non-empty remotes by overwriting them.
-
-## License
-
-MIT. This toolkit is generic; client source, evidence, runs and credentials stay out
-of the toolkit repository. Respect each employer/client's AI and source-code policies.
+MIT licensed. No client code, credentials or production data belong in this toolkit.

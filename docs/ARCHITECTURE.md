@@ -1,3 +1,6 @@
+> This page documents the optional Python API/CLI engine. For the default three
+> independent native agents, see [NATIVE_AGENTS.md](NATIVE_AGENTS.md).
+
 # Why these agents exist
 
 The original article's useful contribution is repository visibility for QA: map a

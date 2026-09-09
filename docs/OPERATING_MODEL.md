@@ -8,12 +8,12 @@ Element451's private architecture, current test coverage or measured bottleneck.
 
 | Stage | Practical work | Accountable human | Agent contribution |
 |---|---|---|---|
-| Story refinement | Agree observable acceptance criteria, boundaries and risk | Product + developer; QA for significant risk | Risk Mapper flags ambiguity, drafts scenarios and traces implementation |
-| Test design | Decide lowest reliable layer; inspect existing assertions | Implementing developer with risk-based QA review | Risk Mapper records layer, oracle, coverage evidence and unknowns |
-| Development | Implement behavior and produce reviewed regression tests | Developer | Test Builder proposes test files tied to approved scenario ids |
-| PR and CI | Run deterministic project gates; review code and failures | Developer/code owner | Failure Analyst interprets supplied CI evidence and suggests next investigation |
+| Story refinement | Agree observable acceptance criteria, boundaries and risk | Product + developer; QA for significant risk | Risk Analyst flags ambiguity, drafts scenarios and traces implementation |
+| Test design | Decide lowest reliable layer; inspect existing assertions | Implementing developer with risk-based QA review | Risk Analyst records layer, oracle, coverage evidence and unknowns |
+| Development | Implement behavior and produce reviewed regression tests | Developer | Test Engineer proposes test files tied to approved scenario ids |
+| PR and CI | Run deterministic project gates; review code and failures | Developer/code owner | Quality Reviewer interprets supplied CI evidence and suggests next investigation |
 | QA verification | Explore uncertainty, cross-system behavior and high-risk changes | QA | Existing reports reduce preparation and log gathering; human determines remaining tests |
-| Release feedback | Monitor agreed signals, triage escaped defects, feed learning into scenarios | Release owner + feature owner | Failure Analyst reviews exported evidence; new scenarios go back through Risk Mapper |
+| Release feedback | Monitor agreed signals, triage escaped defects, feed learning into scenarios | Release owner + feature owner | Quality Reviewer reviews exported evidence; new scenarios go back through Risk Analyst |
 
 The toolkit implements analysis, proposals, local review records and explicit local
 execution. It does not implement a product backlog, CI service, monitoring platform,
@@ -37,10 +37,10 @@ passing unit test is insufficient evidence for nondeterministic behavior.
 ## A focused first rollout
 
 1. Select a component with usable local tests, a developer owner and baseline QA data.
-2. Run Risk Mapper on historical stories; compare recommendations with known results.
-3. Introduce Test Builder when scenario quality is acceptable. Keep code review in
+2. Run Risk Analyst on historical stories; compare recommendations with known results.
+3. Introduce Test Engineer when scenario quality is acceptable. Keep code review in
    the normal developer workflow and run regressions on known historical failures.
-4. Introduce Failure Analyst using exported logs. Compare diagnoses with human triage.
+4. Introduce Quality Reviewer using exported logs. Compare diagnoses with human triage.
 5. Measure total human effort, review waiting time, flaky blocking runs and escaped
    defects. Expand only where the combined process improves these outcomes.
 
@@ -50,8 +50,8 @@ queue creates capacity. [PILOT.md](PILOT.md) defines how to check that hypothesi
 
 ## Mapping to the earlier presentation
 
-“Story Analyst” became **Risk Mapper**: it now covers both acceptance criteria and
-repository-level test placement. “Automation Engineer” became **Test Builder** with
+“Story Analyst” became **Risk Analyst**: it now covers both acceptance criteria and
+repository-level test placement. “Automation Engineer” became **Test Engineer** with
 reviewed proposals and separate execution. “Quality Analyst” became **Failure
 Analyst** with evidence requirements and explicit uncertainty. These are different
 contracts around a shared model adapter; no separate model training is required.

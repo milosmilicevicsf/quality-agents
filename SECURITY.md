@@ -34,3 +34,12 @@
 
 Report security issues privately to the repository owner; do not include credentials
 or customer data in a public issue.
+# Native three-agent path
+
+The default native-agent workflow uses the coding host's tools and permissions.
+The Python CLI protections below apply only when that CLI is used. Native agent
+configuration requests read-only analyst/reviewer roles; host runtime overrides
+may affect enforcement. Test edits and execution inherit the host's normal policy.
+Only the engineer owns test edits; the independent reviewer reads raw evidence.
+The HTML renderer escapes text and uses no remote assets or scripts, but it does
+not authenticate agent identities or prove model findings correct.

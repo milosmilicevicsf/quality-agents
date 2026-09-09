@@ -1,3 +1,6 @@
+> Optional manual handoff for the Python CLI. The default now uses native
+> delegation without manual JSON exchange: see [README](../README.md).
+
 # Use with a coding assistant
 
 Use one separate conversation per role. Attach the prepared `prompt.md` and say:

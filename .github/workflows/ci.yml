@@ -25,3 +25,21 @@ jobs:
       - name: Installed CLI
         working-directory: ${{ runner.temp }}
         run: quality-agents --version
+  native-agents:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Agent registration and standalone reports
+        run: node --test tests/skills.test.mjs
+      - name: Discover both entry skills
+        run: npx --yes skills@1.5.25 add . --list

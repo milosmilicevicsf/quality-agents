@@ -1,0 +1,22 @@
+{
+  "project": "Admissions demo · illustrative sample",
+  "task": "A deadline is a boundary, not another browser test.",
+  "mode": "analyze",
+  "status": "review-needed",
+  "execution_model": "example",
+  "agents": [],
+  "revision": "Example only — no live repository was analyzed",
+  "summary": "Map deadline validation to unit tests and retain one assembled submission journey. The exact expiry boundary needs an explicit regression. This is sample report data, not an agent run.",
+  "scope": "Illustrative admissions feature. The evidence below describes a hypothetical review; it is not a reference to inspected customer code.",
+  "scenarios": [
+    {"id":"S1","priority":"high","behavior":"Reject submission at the exact expiry time","layer":"unit","oracle":"For now == deadline, submission is rejected.","coverage":"missing","evidence":"Illustrative gap: an inclusive time comparison could accept an expired submission. Inspect the actual predicate and existing boundary assertions."},
+    {"id":"S2","priority":"medium","behavior":"Reject timestamps without timezone information","layer":"unit","oracle":"A naive timestamp is rejected with a defined validation error.","coverage":"unknown","evidence":"No implementation was inspected for this example. Confirm the required timezone policy with the product owner."},
+    {"id":"S3","priority":"high","behavior":"Confirm a valid submission reaches its final state","layer":"e2e","oracle":"A valid submission is persisted and its confirmation is visible to the user.","coverage":"partial","evidence":"Illustrative partial coverage: a page-only confirmation assertion may not prove persistence. Inspect the actual journey and service response."}
+  ],
+  "checks": [
+    {"name":"Exact expiry regression","status":"not-run","command":"","scenario_ids":["S1"],"evidence":"Analysis-only example. No test was generated or executed; use the project's discovered unit-test command after implementation."}
+  ],
+  "findings": [],
+  "next_actions": ["Agree the exact deadline and timezone rules, then request regression tests for S1 and S2.", "Inspect the current E2E assertion before adding a second browser journey."],
+  "limitations": ["This is an illustrative report preview with prewritten data, not an AI analysis or benchmark.", "No tests were executed. No runtime or coverage result is claimed."]
+}
